@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:int="http://Interface.ssns.swt.cug/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <int:register>
+         <!--Optional:-->
+         <arg0>?</arg0>
+         <!--Optional:-->
+         <arg1>?</arg1>
+      </int:register>
+   </soapenv:Body>
+</soapenv:Envelope>

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils.Null;
 import org.dom4j.DocumentException;
 import org.joda.time.DateTime;
 import org.locationtech.jts.geom.Coordinate;
@@ -20,6 +19,7 @@ import org.n52.shetland.ogc.sos.request.InsertObservationRequest;
 import org.n52.shetland.ogc.swe.SweDataRecord;
 import org.n52.shetland.ogc.swe.SweField;
 import org.n52.shetland.ogc.swe.simpleType.SweQuantity;
+import org.n52.shetland.ogc.swe.simpleType.SweText;
 import org.n52.shetland.util.JTSHelper;
 import org.n52.svalbard.encode.exception.EncodingException;
 
@@ -28,9 +28,7 @@ import utils.CreateInsertObsReq;
 import utils.Encoder;
 import utils.SendPost;
 
-
-public class InsertTaxiObservationThread extends Thread{
-
+public class InsertImageObservationThread extends Thread{
 	private static final String COMPOSITE_OBSERVABLE_PROPERTY = "urn:swt:def:observableProperty:composite";
 	private static final GeometryFactory GEOM_FACTORY_4326 = JTSHelper.getGeometryFactoryForSRID(4326);
 	private String sensorname = null;
@@ -42,17 +40,19 @@ public class InsertTaxiObservationThread extends Thread{
 	private ComplexValue values = null;
 	private int status = 1;
 	private String sosurl = null;
+	private String unit = null;
+	private String properyname = null;
 	
 	
-	public InsertTaxiObservationThread(String sensorname ,String sosurl) {
+	public InsertImageObservationThread(String sensorname ,String sosurl, String unit, String propertyname) {
 		// TODO Auto-generated constructor stub
 		this.sensorname = sensorname;
 		this.sosurl = sosurl;
 		this.offerings = new ArrayList<>();
 		offerings.add("offering_" + sensorname);
 		procedure = "procedure_" + sensorname;
-
-		
+		this.unit = unit;
+		this.properyname = propertyname;
 	}
 	
 	
@@ -82,7 +82,7 @@ public class InsertTaxiObservationThread extends Thread{
 	public void run() {
 		Encoder encoder = new Encoder();
 		try {
-			String sml = encoder.encodeInsertSensorReq(offerings.get(0), procedure, "fee", "Test Taxi", "TT", "fee", "yuan");
+			String sml = encoder.encodeInsertSensorReq(offerings.get(0), procedure, properyname, "Test", "test", properyname, unit);
 			SendPost.sendPostToSos(sosurl, sml, sensorname);
 		} catch (DocumentException e1) {
 			// TODO Auto-generated catch block
@@ -104,16 +104,14 @@ public class InsertTaxiObservationThread extends Thread{
     		
     		//complexValue
     		
-    		String observableProperty = "urn:swt:def:observableProperty:fee";
-    		String unit = "yuan";
-    		Double fee = createData.randomFee();
-            SweQuantity sweQuantity = new SweQuantity();
-            sweQuantity.setDefinition(observableProperty);
-            sweQuantity.setUom(unit);
-            sweQuantity.setValue(fee);
-            sweQuantity.setValue(fee);
+    		String observableProperty = "urn:swt:def:observableProperty" + properyname;
+    		Double fee = createData.randomValue();
+    		
+    		SweText sweText = new SweText();
+    		sweText.setDefinition(observableProperty);
+    		sweText.setValue("http://5b0988e595225.cdn.sohucs.com/images/20171101/0881920a6cb749ba9f9b57ba24dd1058.jpeg");
             SweDataRecord sweDataRecord = new SweDataRecord();
-            SweDataRecord record = sweDataRecord.addField(new SweField("quantity", sweQuantity));
+            SweDataRecord record = sweDataRecord.addField(new SweField("text", sweText));
             values = new ComplexValue(record);
             
             
@@ -147,9 +145,4 @@ public class InsertTaxiObservationThread extends Thread{
         }  
 	}
 	
-	public static void main(String[] args) throws DocumentException {
-
-	}
-
 }
-

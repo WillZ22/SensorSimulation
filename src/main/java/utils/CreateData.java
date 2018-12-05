@@ -10,7 +10,7 @@ public class CreateData {
 		return dateTime;
 	}
 	
-	public double randomFee() {
+	public double randomValue() {
 		double fee = randomInRange(0.0, 100.0, 2);
 		return fee;
 	}

@@ -35,6 +35,8 @@ import java.awt.Cursor;
 import javax.swing.tree.DefaultTreeModel;
 
 import action.ButtonAction;
+import action.RegisterAction;
+import action.StausChangeAction;
 import utils.RunningList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -46,13 +48,14 @@ import java.awt.event.ActionEvent;
 public class MainFrame {
 
 	private JFrame mainframe;
-	private JTextField serviceUrl;
+	private JTextField sosUrl;
 	private JTree allSensorTree;
 	private JTree runingSensorTree;
 	private JLabel lblurl;
 	private String sensorname;
 	private String sensortype;
 	public static JTextArea responseArea;
+	private JTextField ssnsUrl;
 
 	/**
 	 * Launch the application.
@@ -118,24 +121,76 @@ public class MainFrame {
 			new DefaultMutableTreeNode("传感器列表") {
 				{
 					DefaultMutableTreeNode node_1;
-					node_1 = new DefaultMutableTreeNode("原位传感器");
-						
-						node_1.add(new DefaultMutableTreeNode("detector1"));
-						node_1.add(new DefaultMutableTreeNode("detector2"));
-						node_1.add(new DefaultMutableTreeNode("detector3"));
-						node_1.add(new DefaultMutableTreeNode("detector4"));
-						node_1.add(new DefaultMutableTreeNode("detector5"));
-						node_1.add(new DefaultMutableTreeNode("detector6"));
-						node_1.add(new DefaultMutableTreeNode("detector7"));
+					DefaultMutableTreeNode node_2;
+					node_1 = new DefaultMutableTreeNode("地质灾害");
+						node_2 = new DefaultMutableTreeNode("测斜仪");
+							node_2.add(new DefaultMutableTreeNode("Inclinometer_1"));
+							node_2.add(new DefaultMutableTreeNode("Inclinometer_2"));
+							node_2.add(new DefaultMutableTreeNode("Inclinometer_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("沉降仪");
+							node_2.add(new DefaultMutableTreeNode("Settlement_1"));
+							node_2.add(new DefaultMutableTreeNode("Settlement_2"));
+							node_2.add(new DefaultMutableTreeNode("Settlement_3"));
+						node_1.add(node_2);
 					add(node_1);
-					node_1 = new DefaultMutableTreeNode("移动传感器");
-						node_1.add(new DefaultMutableTreeNode("taxi1"));
-						node_1.add(new DefaultMutableTreeNode("taxi2"));
-						node_1.add(new DefaultMutableTreeNode("taxi3"));
-						node_1.add(new DefaultMutableTreeNode("taxi4"));
-						node_1.add(new DefaultMutableTreeNode("taxi5"));
-						node_1.add(new DefaultMutableTreeNode("taxi6"));
-						node_1.add(new DefaultMutableTreeNode("taxi7"));
+					node_1 = new DefaultMutableTreeNode("水资源");
+						node_2 = new DefaultMutableTreeNode("水位传感器");
+							node_2.add(new DefaultMutableTreeNode("waterlevel_1"));
+							node_2.add(new DefaultMutableTreeNode("waterlevel_2"));
+							node_2.add(new DefaultMutableTreeNode("waterlevel_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("雨量传感器");
+							node_2.add(new DefaultMutableTreeNode("rainfall_1"));
+							node_2.add(new DefaultMutableTreeNode("rainfall_2"));
+							node_2.add(new DefaultMutableTreeNode("rainfall_3"));
+						node_1.add(node_2);
+					add(node_1);
+					node_1 = new DefaultMutableTreeNode("气候");
+						node_2 = new DefaultMutableTreeNode("温度传感器");
+							node_2.add(new DefaultMutableTreeNode("Temperature_1"));
+							node_2.add(new DefaultMutableTreeNode("Temperature_2"));
+							node_2.add(new DefaultMutableTreeNode("Temperature_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("风速传感器");
+							node_2.add(new DefaultMutableTreeNode("windspeed_1"));
+							node_2.add(new DefaultMutableTreeNode("windspeed_2"));
+							node_2.add(new DefaultMutableTreeNode("windspeed_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("风向传感器");
+							node_2.add(new DefaultMutableTreeNode("winddirection_1"));
+							node_2.add(new DefaultMutableTreeNode("winddirection_2"));
+							node_2.add(new DefaultMutableTreeNode("winddirection_3"));
+						node_1.add(node_2);
+					add(node_1);
+					node_1 = new DefaultMutableTreeNode("生态环境");
+						node_2 = new DefaultMutableTreeNode("湿度传感器");
+							node_2.add(new DefaultMutableTreeNode("Humidity_1"));
+							node_2.add(new DefaultMutableTreeNode("Humidity_2"));
+							node_2.add(new DefaultMutableTreeNode("Humidity_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("CO2浓度传感器");
+							node_2.add(new DefaultMutableTreeNode("CO2_1"));
+							node_2.add(new DefaultMutableTreeNode("CO2_2"));
+							node_2.add(new DefaultMutableTreeNode("CO2_3"));
+						node_1.add(node_2);
+					add(node_1);
+					node_1 = new DefaultMutableTreeNode("城市交通");
+						node_2 = new DefaultMutableTreeNode("GPS");
+							node_2.add(new DefaultMutableTreeNode("taxigps_1"));
+							node_2.add(new DefaultMutableTreeNode("taxigps_2"));
+							node_2.add(new DefaultMutableTreeNode("taxigps_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("视频");
+							node_2.add(new DefaultMutableTreeNode("videocarera_1"));
+							node_2.add(new DefaultMutableTreeNode("videocarera_2"));
+							node_2.add(new DefaultMutableTreeNode("videocarera_3"));
+						node_1.add(node_2);
+						node_2 = new DefaultMutableTreeNode("图像");
+							node_2.add(new DefaultMutableTreeNode("imagecamera_1"));
+							node_2.add(new DefaultMutableTreeNode("imagecamera_2"));
+							node_2.add(new DefaultMutableTreeNode("imagecamera_3"));
+						node_1.add(node_2);
 					add(node_1);
 				}
 			}
@@ -179,22 +234,28 @@ public class MainFrame {
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO:
-				if (sensorname == null || sensorname.equals("原位传感器") || sensorname.equals("移动传感器")) {
+				if (sensorname == null || !sensorname.matches("[a-zA-Z0-9_]+")) {
 					JOptionPane.showMessageDialog(mainframe, "请选择传感器", "标题",JOptionPane.WARNING_MESSAGE);  
 					return;
-				} else if (serviceUrl.getText().equals("")) {
+				} else if (sosUrl.getText().equals("")) {
 					JOptionPane.showMessageDialog(mainframe, "输入服务地址", "标题",JOptionPane.WARNING_MESSAGE);  
 				}
 
-				String sosurl = serviceUrl.getText();
+				String sosurl = sosUrl.getText();
 				Boolean boolean1 =  ButtonAction.start(sensortype, sensorname, sosurl);
-				RunningList.runningList.add(sensorname);
-				refreshTree();
+
+				
 				if (boolean1) {
-					
+					RunningList.runningList.add(sensorname);
+					String endpoint = ssnsUrl.getText();
+					RegisterAction registerAction = new RegisterAction();
+					registerAction.register("procedure_"+sensorname, sosurl, endpoint);
+					StausChangeAction stausChangeAction = new StausChangeAction();
+					stausChangeAction.start("procedure_"+sensorname, endpoint);
 				} else {
 					JOptionPane.showMessageDialog(mainframe, "已在运行", "标题",JOptionPane.WARNING_MESSAGE);
 				}
+				refreshTree();
 			}
 		});
 		
@@ -209,6 +270,9 @@ public class MainFrame {
 					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(mainframe, "已停止", "标题",JOptionPane.WARNING_MESSAGE);
+					String endpoint = ssnsUrl.getText();
+					StausChangeAction stausChangeAction = new StausChangeAction();
+					stausChangeAction.stop("procedure_"+ sensorname, endpoint);
 				}
 			}
 		});
@@ -216,18 +280,29 @@ public class MainFrame {
 		buttonPanel.add(btnStart);
 		buttonPanel.add(btnStop);
 		
-		lblurl = new JLabel("服务URL：");
+		lblurl = new JLabel("SOS URL：");
 		lblurl.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
 		lblurl.setSize(300, 10);
 		buttonPanel.add(lblurl);
 		
-		serviceUrl = new JTextField();
-		serviceUrl.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		serviceUrl.setHorizontalAlignment(SwingConstants.LEFT);
-		serviceUrl.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
-		serviceUrl.setText("http://localhost:8080/52n-sos-webapp/service");
-		buttonPanel.add(serviceUrl);
-		serviceUrl.setColumns(12);
+		sosUrl = new JTextField();
+		sosUrl.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		sosUrl.setHorizontalAlignment(SwingConstants.LEFT);
+		sosUrl.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+		sosUrl.setText("http://localhost:8080/52n-sos-webapp/service");
+		buttonPanel.add(sosUrl);
+		sosUrl.setColumns(15);
+		
+		JLabel lblNewLabel = new JLabel("SSNS URL");
+		lblNewLabel.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+		buttonPanel.add(lblNewLabel);
+		
+		ssnsUrl = new JTextField();
+		ssnsUrl.setText("http://localhost:8080/SSNS/service");
+		ssnsUrl.setFont(new Font("Microsoft JhengHei", Font.PLAIN, 15));
+		ssnsUrl.setHorizontalAlignment(SwingConstants.LEFT);
+		buttonPanel.add(ssnsUrl);
+		ssnsUrl.setColumns(15);
 		
 		runingSensorAndXMLPanel.setLeftComponent(runingSensorTree);
 	}
