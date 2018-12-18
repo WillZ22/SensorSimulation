@@ -22,9 +22,9 @@ public class RegisterAction {
 		try {
 			xmlDoc = reader.read(file);
 	        Element root = xmlDoc.getRootElement();
-	        root.element("Body").element("register").element("arg0").setText(sensorid);
-	        root.element("Body").element("register").element("arg1").setText(sosAdress);
-	        root.element("Body").element("register").element("arg2").setText("5000ms");
+	        root.element("Body").element("register").element("sensorid").setText(sensorid);
+	        root.element("Body").element("register").element("sosAdress").setText(sosAdress);
+	        root.element("Body").element("register").element("frequence").setText("5000ms");
 	        String xmlStr = xmlDoc.asXML();
 			SendPost.sendPostToSSNS(ssnsUrl, xmlStr);
 		} catch (DocumentException e) {
@@ -46,7 +46,7 @@ public class RegisterAction {
 		try {
 			xmlDoc = reader.read(file);
 	        Element root = xmlDoc.getRootElement();
-	        root.element("Body").element("unregister").element("arg0").setText(sensorid);
+	        root.element("Body").element("unregister").element("sensorid").setText(sensorid);
 	        String xmlStr = xmlDoc.asXML();
 			SendPost.sendPostToSSNS(ssnsUrl, xmlStr);
 		} catch (DocumentException e) {

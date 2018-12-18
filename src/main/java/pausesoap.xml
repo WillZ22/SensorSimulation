@@ -3,7 +3,7 @@
    <soapenv:Body>
       <int:pause>
          <!--Optional:-->
-         <arg0>1</arg0>
+         <sensorid>1</sensorid>
       </int:pause>
    </soapenv:Body>
 </soapenv:Envelope>

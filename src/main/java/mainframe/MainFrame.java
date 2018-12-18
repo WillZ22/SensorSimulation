@@ -278,11 +278,13 @@ public class MainFrame {
 				
 				String sosurl = sosUrl.getText();
 				Boolean boolean1 = ButtonAction.stop(sensorname);
-				RunningList.runningList.remove(sensorname);
-				refreshTree();
+
+
 				if (boolean1) {
 					RegisterAction registerAction = new RegisterAction();
 					registerAction.unregister("procedure_"+sensorname, sosurl);
+					RunningList.runningList.remove(sensorname);
+					refreshTree();
 					JOptionPane.showMessageDialog(mainframe, "已停止", "标题",JOptionPane.WARNING_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
@@ -299,8 +301,17 @@ public class MainFrame {
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Boolean boolean1 = ButtonAction.pause(sensorname);
-				if (!boolean1) {
-					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
+				
+				Boolean boolean2 = true;
+				
+				for(String string:PauseList.pauseList) {
+					String name= sensorname+"(pause)";
+					if (string.equals(name)) {
+						boolean2 = false;
+					}
+				}
+				if (!boolean1 || !boolean2) {
+					JOptionPane.showMessageDialog(mainframe, "没有运行或已暂停", "标题",JOptionPane.WARNING_MESSAGE);
 				} else {
 					String endpoint = ssnsUrl.getText();
 					StausChangeAction stausChangeAction = new StausChangeAction();

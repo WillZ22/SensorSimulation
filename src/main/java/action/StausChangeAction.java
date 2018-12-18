@@ -22,7 +22,7 @@ public class StausChangeAction {
 		try {
 			xmlDoc = reader.read(file);
 	        Element root = xmlDoc.getRootElement();
-	        root.element("Body").element("start").element("arg0").setText(sensorid);
+	        root.element("Body").element("start").element("sensorid").setText(sensorid);
 	        String xmlStr = xmlDoc.asXML();
 			SendPost.sendPostToSSNS(ssnsUrl, xmlStr);
 		} catch (DocumentException e) {
@@ -44,7 +44,7 @@ public class StausChangeAction {
 		try {
 			xmlDoc = reader.read(file);
 	        Element root = xmlDoc.getRootElement();
-	        root.element("Body").element("pause").element("arg0").setText(sensorid);
+	        root.element("Body").element("pause").element("sensorid").setText(sensorid);
 	        String xmlStr = xmlDoc.asXML();
 			SendPost.sendPostToSSNS(ssnsUrl, xmlStr);
 		} catch (DocumentException e) {
@@ -66,7 +66,7 @@ public class StausChangeAction {
 		try {
 			xmlDoc = reader.read(file);
 	        Element root = xmlDoc.getRootElement();
-	        root.element("Body").element("resume").element("arg0").setText(sensorid);
+	        root.element("Body").element("resume").element("sensorid").setText(sensorid);
 	        String xmlStr = xmlDoc.asXML();
 			SendPost.sendPostToSSNS(ssnsUrl, xmlStr);
 		} catch (DocumentException e) {

@@ -3,11 +3,11 @@
    <soapenv:Body>
       <int:register>
          <!--Optional:-->
-         <arg0>2</arg0>
+         <sensorid>?</sensorid>
          <!--Optional:-->
-         <arg1>3</arg1>
+         <sosAdress>?</sosAdress>
          <!--Optional:-->
-         <arg2>4</arg2>
+         <frequence>?</frequence>
       </int:register>
    </soapenv:Body>
 </soapenv:Envelope>
