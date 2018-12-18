@@ -37,11 +37,13 @@ import javax.swing.tree.DefaultTreeModel;
 import action.ButtonAction;
 import action.RegisterAction;
 import action.StausChangeAction;
+import utils.PauseList;
 import utils.RunningList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
@@ -80,6 +82,8 @@ public class MainFrame {
 			new DefaultMutableTreeNode("运行中传感器") {
 				{
 					for(String node:RunningList.runningList)
+					add(new DefaultMutableTreeNode(node));
+					for(String node:PauseList.pauseList)
 					add(new DefaultMutableTreeNode(node));
 				}
 			}
@@ -243,15 +247,24 @@ public class MainFrame {
 
 				String sosurl = sosUrl.getText();
 				Boolean boolean1 =  ButtonAction.start(sensortype, sensorname, sosurl);
-
+				Boolean boolean2 = true;
 				
-				if (boolean1) {
+				for(String string:PauseList.pauseList) {
+					String name= sensorname+"(pause)";
+					if (string.equals(name)) {
+						boolean2 = false;
+					}
+				}
+				
+				if (boolean1 && boolean2) {
 					RunningList.runningList.add(sensorname);
 					String endpoint = ssnsUrl.getText();
 					RegisterAction registerAction = new RegisterAction();
 					registerAction.register("procedure_"+sensorname, sosurl, endpoint);
 					StausChangeAction stausChangeAction = new StausChangeAction();
 					stausChangeAction.start("procedure_"+sensorname, endpoint);
+					JOptionPane.showMessageDialog(mainframe, "成功", "标题",JOptionPane.WARNING_MESSAGE);
+					refreshTree();
 				} else {
 					JOptionPane.showMessageDialog(mainframe, "已在运行", "标题",JOptionPane.WARNING_MESSAGE);
 				}
@@ -262,22 +275,75 @@ public class MainFrame {
 		JButton btnStop = new JButton("停止");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO:
+				
+				String sosurl = sosUrl.getText();
 				Boolean boolean1 = ButtonAction.stop(sensorname);
 				RunningList.runningList.remove(sensorname);
 				refreshTree();
-				if (!boolean1) {
-					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
-				} else {
+				if (boolean1) {
+					RegisterAction registerAction = new RegisterAction();
+					registerAction.unregister("procedure_"+sensorname, sosurl);
 					JOptionPane.showMessageDialog(mainframe, "已停止", "标题",JOptionPane.WARNING_MESSAGE);
-					String endpoint = ssnsUrl.getText();
-					StausChangeAction stausChangeAction = new StausChangeAction();
-					stausChangeAction.stop("procedure_"+ sensorname, endpoint);
+				} else {
+					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
+//					String endpoint = ssnsUrl.getText();
+//					StausChangeAction stausChangeAction = new StausChangeAction();
+//					stausChangeAction.stop("procedure_"+ sensorname, endpoint);
 				}
 			}
 		});
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		buttonPanel.add(btnStart);
+		
+		JButton btnPause = new JButton("暂停");
+		btnPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Boolean boolean1 = ButtonAction.pause(sensorname);
+				if (!boolean1) {
+					JOptionPane.showMessageDialog(mainframe, "没有运行", "标题",JOptionPane.WARNING_MESSAGE);
+				} else {
+					String endpoint = ssnsUrl.getText();
+					StausChangeAction stausChangeAction = new StausChangeAction();
+					stausChangeAction.pause("procedure_"+ sensorname, endpoint);
+					JOptionPane.showMessageDialog(mainframe, "已暂停", "标题",JOptionPane.WARNING_MESSAGE);
+					RunningList.runningList.remove(sensorname);
+					PauseList.pauseList.add(sensorname+"(pause)");
+					refreshTree();
+				}
+			}
+		});
+		buttonPanel.add(btnPause);
+		
+		JButton btnResume = new JButton("恢复");
+		btnResume.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sosurl = sosUrl.getText();
+				Boolean boolean1 = ButtonAction.resume(sensortype, sensorname, sosurl);
+				Boolean boolean2 = false;
+				for(String string:PauseList.pauseList) {
+					String name= sensorname+"(pause)";
+					if (string.equals(name)) {
+						boolean2 = true;
+					}
+				}
+					if (!boolean1 && !boolean2) {
+						JOptionPane.showMessageDialog(mainframe, "已在运行", "标题",JOptionPane.WARNING_MESSAGE);
+					} else {
+
+						String endpoint = ssnsUrl.getText();
+						StausChangeAction stausChangeAction = new StausChangeAction();
+						stausChangeAction.pause("procedure_"+ sensorname, endpoint);
+						RunningList.runningList.add(sensorname);
+						PauseList.pauseList.remove(sensorname+"(pause)");
+						JOptionPane.showMessageDialog(mainframe, "已恢复", "标题",JOptionPane.WARNING_MESSAGE);
+						refreshTree();
+						
+					}
+				
+
+			}
+		});
+		buttonPanel.add(btnResume);
 		buttonPanel.add(btnStop);
 		
 		lblurl = new JLabel("SOS URL：");
